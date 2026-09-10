@@ -20,7 +20,7 @@ load_dotenv()
 
 db="chroma_db"
 
-def get_llm(model:str = "llama-3.3-70b-versatile" , temperature: float = 0.2) -> ChatGroq:  
+def get_llm(model:str = "llama-3.1-8b-instant" , temperature: float = 0.2) -> ChatGroq:  
 
     api_key = None
     if hasattr(st, "secrets") and "GROQ_API_KEY" in st.secrets:
