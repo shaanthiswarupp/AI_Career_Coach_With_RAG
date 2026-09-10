@@ -74,7 +74,7 @@ def retrieve_context_data( vectorstore: Chroma, query: str,  k: int = 3 ) -> Lis
 
 
 #------------------->  6
-def run_career_coach( resume_text: str, jd_text: str, query: str, chunk_size: int = 1000, chunk_overlap: int = 200, k: int = 3 ) -> str:
+def run_career_coach( vectorstore, resume_text: str, jd_text: str, query: str, chunk_size: int = 1000, chunk_overlap: int = 200, k: int = 3 ) -> str:
    
     documents = create_documents(resume_text, jd_text) # Step 1: Create documents from resume and job description
    
