@@ -68,7 +68,8 @@ def create_vectorstore( chunks: List[Document], persist_directory="./chroma_db" 
 
     #             ========= vectorstore =========
     vectorstore = Chroma(documents=chunks, embedding_function=get_embeddings() , client=client, collection_name="career_coach_RAG",)
-    return vectorstore.add_documents(documents=chunks)  
+    vectorstore.add_documents(documents=chunks)  
+    return vectorstore
 
 
 
