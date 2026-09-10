@@ -59,7 +59,7 @@ def split_documents( documents: List[Document], chunk_size: int = 1000, chunk_ov
 
 
 #------------------->  3 & 4
-def create_vectorstore( chunks: List[Document], persist_directory="./chroma_db" )->Chroma:
+def create_vectorstore( chunks: List[Document], persist_directory:str ="./chroma_db" )->Chroma:
 
     if os.path.exists(persist_directory):
         shutil.rmtree(persist_directory)    
@@ -67,8 +67,9 @@ def create_vectorstore( chunks: List[Document], persist_directory="./chroma_db" 
     client = chromadb.PersistentClient(path=persist_directory)
 
     #             ========= vectorstore =========
-    vectorstore = Chroma(documents=chunks, embedding_function=get_embeddings() , client=client, collection_name="career_coach_RAG",)
-    vectorstore.add_documents(documents=chunks)  
+    vectorstore = Chroma(embedding_function = get_embeddings() , client=client, collection_name="career_coach_RAG",)
+    vectorstore.add_documents(documents=chunks) 
+     
     return vectorstore
 
 
