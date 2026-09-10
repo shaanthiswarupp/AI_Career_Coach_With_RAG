@@ -22,7 +22,7 @@ def get_llm(model:str = "llama3-70b-8192" , temperature: float = 0.2) -> ChatGro
     
     return ChatGroq(model=model, temperature=temperature )
 
-def get_embeddings(model_name: str = "hkunlp/instructor-xl") -> HuggingFaceEmbeddings:
+def get_embeddings(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> HuggingFaceEmbeddings:
     return HuggingFaceEmbeddings(model_name=model_name)
 
 
@@ -59,7 +59,7 @@ def split_documents( documents: List[Document], chunk_size: int = 1000, chunk_ov
 
 
 #------------------->  3 & 4
-def create_vectorstore( chunks: List[Document], persist_directory="./chroma_db" ):
+def create_vectorstore( chunks: List[Document], persist_directory="./chroma_db" )->Chroma:
 
     if os.path.exists(persist_directory):
         shutil.rmtree(persist_directory)    
@@ -67,8 +67,8 @@ def create_vectorstore( chunks: List[Document], persist_directory="./chroma_db" 
     client = chromadb.PersistentClient(path=persist_directory)
 
     #             ========= vectorstore =========
-    vectorstore = Chroma.from_documents(documents=chunks, embedding_function=get_embeddings() , client=client, collection_name="career_coach_RAG",)
-    return vectorstore  
+    vectorstore = Chroma(documents=chunks, embedding_function=get_embeddings() , client=client, collection_name="career_coach_RAG",)
+    return vectorstore.add_documents(documents=chunks)  
 
 
 
