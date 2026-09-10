@@ -1,5 +1,7 @@
 import os
 import shutil
+import streamlit as st
+
 from pathlib import Path
 from typing import List
 from dotenv import load_dotenv
@@ -19,6 +21,17 @@ load_dotenv()
 db="chroma_db"
 
 def get_llm(model:str = "llama3-70b-8192" , temperature: float = 0.2) -> ChatGroq:  
+
+    api_key = None
+    if hasattr(st, "secrets") and "GROQ_API_KEY" in st.secrets:
+        api_key = st.secrets["GROQ_API_KEY"]
+    else:
+        api_key = os.getenv("GROQ_API_KEY")
+
+    if not api_key:
+        raise ValueError(
+            "GROQ_API_KEY is not set. Please add it to Streamlit Secrets or your .env file."
+        )
     
     return ChatGroq(model=model, temperature=temperature )
 
@@ -69,7 +82,7 @@ def create_vectorstore( chunks: List[Document], persist_directory:str ="./chroma
     #             ========= vectorstore =========
     vectorstore = Chroma(embedding_function = get_embeddings() , client=client, collection_name="career_coach_RAG",)
     vectorstore.add_documents(documents=chunks) 
-     
+
     return vectorstore
 
 
