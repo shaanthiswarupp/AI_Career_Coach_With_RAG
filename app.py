@@ -132,7 +132,7 @@ if st.session_state.vectorstore:
 
     if st.button("🤖 Get Career Coach Answer"):
         with st.spinner("retieving context"):
-            answer , sources = run_career_coach( vectorstore, resume_text, jd_text, final_question )
+            answer , sources = run_career_coach( st.session_state.vectorstore, resume_text, jd_text, final_question )
 
         st.markdown("## Career Coach Answer.....")
         st.write(answer)
