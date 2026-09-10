@@ -58,7 +58,7 @@ def create_vectorstore( chunks: List[Document], persist_directory: str = db ) ->
     #             ========= vectorstore =========
     vectorstore = Chroma.from_documents(chunks, embeddings, persist_directory=persist_directory)
 
-    vectorstore.persist()
+    #vectorstore.persist()
 
     return vectorstore  
 
