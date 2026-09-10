@@ -12,6 +12,8 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
+import chromadb
+
 load_dotenv()
 
 db="chroma_db"
@@ -47,20 +49,32 @@ def split_documents( documents: List[Document], chunk_size: int = 1000, chunk_ov
 
     return splitted_documents
 
+
+
+
+
+
 #------------------->  3 & 4
-def create_vectorstore( chunks: List[Document], persist_directory: str = db ) -> Chroma:
+def create_vectorstore( chunks: List[Document], persist_directory="./chroma_db" ) -> Chroma:
 
     if os.path.exists(persist_directory):
         shutil.rmtree(persist_directory)
 
     embeddings = get_embeddings()
 
+    client = chromadb.PersistentClient(path=persist_directory)
+
     #             ========= vectorstore =========
-    vectorstore = Chroma.from_documents(chunks, embeddings, persist_directory=persist_directory)
+    vectorstore = Chroma.from_documents(documents=chunks, embeddings=embeddings , client=client, collection_name="career_coach_collection")
 
     #vectorstore.persist()
 
     return vectorstore  
+
+
+
+
+
 
 #------------------->  5
 def retrieve_context_data( vectorstore: Chroma, query: str,  k: int = 3 ) -> List[Document]:
