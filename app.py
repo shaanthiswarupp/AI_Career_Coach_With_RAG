@@ -98,7 +98,7 @@ if st.button("Build Career coach RAG Index", type="primary"):
         with st.spinner(" Running RAG stages: loading → chunking → embeddings → vector database..."):
             docs = create_documents( resume_text , jd_text )
             chunks = split_documents( docs , chunk_size=chunk_size , chunk_overlap=chunk_overlap )
-            vectorstore = create_vectorstore( chunks )
+            vectorstore = create_vectorstore(chunks)
 
             # store in db
             st.session_state.vectorstore = vectorstore

@@ -32,6 +32,7 @@ def load_text_file( file_path: str , doc_type: str, source: str ) -> List[Docume
    path = Path(file_path)
    text = path.read_text(encoding='utf-8', errors='ignore')
    return [ Document(page_content = text, metadata={"source": source, "doc_type": doc_type})]   
+
 def create_documents( resume_text:str, jd_text:str ) -> List[Document]:
 
     resume_doc = Document(page_content=resume_text, metadata={"source": "resume", "doc_type": "resume"})
@@ -39,6 +40,9 @@ def create_documents( resume_text:str, jd_text:str ) -> List[Document]:
 
 
     return [resume_doc, jd_doc]
+
+
+
 
 #------------------->  2
 def split_documents( documents: List[Document], chunk_size: int = 1000, chunk_overlap: int = 200) -> List[Document]:
@@ -57,13 +61,13 @@ def split_documents( documents: List[Document], chunk_size: int = 1000, chunk_ov
 #------------------->  3 & 4
 def create_vectorstore( chunks: List[Document], persist_directory="./chroma_db" ):
 
-    if os.path(persist_directory).exists():
+    if os.path.exists(persist_directory):
         shutil.rmtree(persist_directory)    
 
     client = chromadb.PersistentClient(path=persist_directory)
 
     #             ========= vectorstore =========
-    vectorstore = Chroma.from_documents(documents=chunks, embeddings = get_embeddings() , client=client, collection_name="career_coach_RAG")
+    vectorstore = Chroma.from_documents(documents=chunks, embedding_function=get_embeddings() , client=client, collection_name="career_coach_RAG",)
     return vectorstore  
 
 
@@ -72,7 +76,7 @@ def create_vectorstore( chunks: List[Document], persist_directory="./chroma_db" 
 
 
 #------------------->  5
-def retrieve_context_data( vectorstore: Chroma, query: str,  k: int = 3 ) -> List[Document]:
+def retrieve_context_data( vectorstore: Chroma, query: str,  k: int = 4 ) -> List[Document]:
 
 
     docs = vectorstore.similarity_search(query, k=k)
@@ -120,7 +124,7 @@ def run_career_coach( vectorstore, resume_text: str, jd_text: str, query: str, k
                                                     """
                                             )      
 
-    chain = prompt | llm | StrOutputParser 
+    chain = prompt | llm | StrOutputParser()
     
     answer = chain.invoke( {"context": context, "query": query} )
     
