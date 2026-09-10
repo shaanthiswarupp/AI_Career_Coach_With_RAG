@@ -63,9 +63,9 @@ with col2:
 
 
 #===== read_uploaded_file ======  from------->>>> file_handle.py
-resume_text = read_uploaded_file(resume_file) if  resume_file else resume_text_input
+resume_text = ( read_uploaded_file(resume_file) if  resume_file else resume_text_input) or ""
 
-jd_text = read_uploaded_file(jd_file) if  jd_file else jd_text_input
+jd_text = (read_uploaded_file(jd_file) if  jd_file else jd_text_input ) or ""
 
 
 
@@ -115,7 +115,7 @@ if st.button("Build Career coach RAG Index", type="primary"):
 #_______________________________________________________________________________________________________________________________
 
 
-if st.session_state.vectorstore:
+if st.session_state.vectorstore is not None:
     st.markdown("### ✅ Ask Career Questions")
 
     quick_questions = [     "How well does this resume match the job description?",
@@ -128,7 +128,7 @@ if st.session_state.vectorstore:
     selected = st.selectbox("Choose a question", quick_questions)
     custom_question = st.text_input("ask a question")
 
-    final_question = custom_question if custom_question else selected
+    final_question = ( custom_question.strip() if custom_question.strip() else selected )
 
     if st.button("🤖 Get Career Coach Answer"):
         with st.spinner("retieving context"):
