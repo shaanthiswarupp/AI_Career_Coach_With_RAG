@@ -88,32 +88,46 @@ def retrieve_context_data( vectorstore: Chroma, query: str,  k: int = 3 ) -> Lis
 
 
 #------------------->  6
-def run_career_coach( vectorstore, resume_text: str, jd_text: str, query: str, chunk_size: int = 1000, chunk_overlap: int = 200, k: int = 3 ) -> str:
+def run_career_coach( vectorstore, resume_text: str, jd_text: str, query: str, k: int = 3 ) -> str:
    
-    documents = create_documents(resume_text, jd_text) # Step 1: Create documents from resume and job description
+    #documents = create_documents(resume_text, jd_text) # Step 1: Create documents from resume and job description
    
-    chunks = split_documents(documents, chunk_size=chunk_size, chunk_overlap=chunk_overlap) # Step 2: Split documents into chunks
+    #chunks = split_documents(documents) # Step 2: Split documents into chunks
     
-    vectorstore = create_vectorstore(chunks)# Step 3: Create vectorstore from chunks
+    #vectorstore = create_vectorstore(chunks)# Step 3: Create vectorstore from chunks
     
-    docs, context = retrieve_context_data(vectorstore, query, k=k)# Step 4: Retrieve context data based on the query
+    retrieval_query = f""" Resume content and job description content relevant to this career coaching question:{query} """
+
+    docs, context = retrieve_context_data(vectorstore, retrieval_query, k=6)# Step 4: Retrieve context data based on the query
 
     llm = get_llm()
     
-    prompt = ChatPromptTemplate.from_template( """ You are a career coach. 
-                                                You have been given a resume and a job description. 
-                                                Your task is to provide a detailed analysis of how well the resume matches the job description.
-                                                Use the following context to answer the question: {context}
-                                                Resume: {resume}
-                                                Job Description: {jd}
-                                                Question: {query}  """ 
-                                            )     
-    
-    query = f"Analyze the resume content and job content relavant to career coaching question"   
+    prompt = ChatPromptTemplate.from_template( """
+                                                    You are an expert AI Career Coach for students, freshers and working professionals.
+                                                    Use ONLY the given context from the resume and job description.
+                                                    Do not invent skills, experience or job requirements.
+
+                                                    CONTEXT:
+                                                    {context}
+
+                                                    USER QUESTION:
+                                                    {query}
+
+                                                    Give a clear, practical answer with these sections when relevant:
+                                                    1. Current Match Summary
+                                                    2. Strengths
+                                                    3. Missing Skills / Gaps
+                                                    4. Recommended Improvements
+                                                    5. Suggested Projects
+                                                    6. Interview Preparation Tips
+
+                                                    Keep the answer simple, actionable and beginner-friendly.
+                                                    """
+                                            )      
 
     chain = prompt | llm | StrOutputParser 
     
-    answer = chain.invoke( {"context": context, "resume": resume_text, "jd": jd_text, "query": query} )
+    answer = chain.invoke( {"context": context, "query": query} )
     
     return answer , docs
 
