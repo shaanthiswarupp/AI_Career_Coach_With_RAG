@@ -55,20 +55,15 @@ def split_documents( documents: List[Document], chunk_size: int = 1000, chunk_ov
 
 
 #------------------->  3 & 4
-def create_vectorstore( chunks: List[Document], persist_directory="./chroma_db" ) -> Chroma:
+def create_vectorstore( chunks: List[Document], persist_directory="./chroma_db" ):
 
-    if os.path.exists(persist_directory):
-        shutil.rmtree(persist_directory)
-
-    embeddings = get_embeddings()
+    if os.path(persist_directory).exists():
+        shutil.rmtree(persist_directory)    
 
     client = chromadb.PersistentClient(path=persist_directory)
 
     #             ========= vectorstore =========
-    vectorstore = Chroma.from_documents(documents=chunks, embeddings=embeddings , client=client, collection_name="career_coach_collection")
-
-    #vectorstore.persist()
-
+    vectorstore = Chroma.from_documents(documents=chunks, embeddings = get_embeddings() , client=client, collection_name="career_coach_RAG")
     return vectorstore  
 
 
