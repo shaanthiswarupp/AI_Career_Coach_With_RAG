@@ -20,7 +20,7 @@ load_dotenv()
 
 db="chroma_db"
 
-def get_llm(model:str = "llama3-70b-8192" , temperature: float = 0.2) -> ChatGroq:  
+def get_llm(model:str = "llama-3.3-70b-versatile" , temperature: float = 0.2) -> ChatGroq:  
 
     api_key = None
     if hasattr(st, "secrets") and "GROQ_API_KEY" in st.secrets:
@@ -112,8 +112,11 @@ def run_career_coach( vectorstore, resume_text: str, jd_text: str, query: str, k
     
     retrieval_query = f""" Resume content and job description content relevant to this career coaching question:{query} """
 
-    docs, context = retrieve_context_data(vectorstore, retrieval_query, k=6)# Step 4: Retrieve context data based on the query
+    docs, context = retrieve_context_data(vectorstore, retrieval_query, k=4)# Step 4: Retrieve context data based on the query
 
+    if not context.strip():
+        context = "No relevant context found in the uploaded documents."
+    
     llm = get_llm()
     
     prompt = ChatPromptTemplate.from_template( """
