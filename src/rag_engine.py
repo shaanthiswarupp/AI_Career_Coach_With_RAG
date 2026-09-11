@@ -33,7 +33,8 @@ def get_llm(model:str = "llama-3.1-8b-instant" , temperature: float = 0.2) -> Ch
             "GROQ_API_KEY is not set. Please add it to Streamlit Secrets or your .env file."
         )
     
-    return ChatGroq(model=model, temperature=temperature )
+        api_key = os.getenv("GROQ_API_KEY")
+    return ChatGroq(model=model, api_key=api_key , temperature=temperature )
 
 def get_embeddings(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> HuggingFaceEmbeddings:
     return HuggingFaceEmbeddings(model_name=model_name)
