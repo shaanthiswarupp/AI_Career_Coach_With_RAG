@@ -4,7 +4,7 @@ import tempfile
 from pathlib import Path   
 from langchain_community.document_loaders import Docx2txtLoader, PyPDFLoader
 
-
+import docx2txt
 
 
 def read_uploaded_file(uploaded_file) -> str:
@@ -18,7 +18,8 @@ def read_uploaded_file(uploaded_file) -> str:
             return uploaded_file.read().decode('utf-8', errors='ignore') # read()
 
         if suffix == ".docx":
-           return Docx2txtLoader(uploaded_file).load()[0].page_content # Docx2txtLoader(uploaded_file).load() => [Document(page_content=..., metadata=...)]
+           text = docx2txt.process(uploaded_file)
+           return text # Docx2txtLoader(uploaded_file).load() => [Document(page_content=..., metadata=...)]
         
         if suffix == ".pdf":
             reader = PyPDFLoader(uploaded_file)  # PyPDFLoader(uploaded_file) => PyPDFLoader(file_path=..., metadata=...)

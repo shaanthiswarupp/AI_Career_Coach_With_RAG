@@ -16,3 +16,5 @@ numpy<2.0.0
 pysqlite3-binary
 langchain-openai
 openai
+
+docx2txt
