@@ -3,7 +3,6 @@ python-dotenv==1.0.1
 langchain==0.3.14
 langchain-core==0.3.29
 langchain-community==0.3.14
-langchain-groq==0.2.3
 langchain-chroma==0.2.0
 langchain-huggingface==0.1.2
 chromadb>=0.5.20
@@ -15,3 +14,5 @@ pandas
 numpy<2.0.0
 
 pysqlite3-binary
+langchain-openai
+openai

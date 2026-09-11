@@ -9,8 +9,8 @@ from langchain_core import documents
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser   
-from langchain_groq import ChatGroq
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_openai import ChatOpenAI
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
@@ -20,21 +20,27 @@ load_dotenv()
 
 db="chroma_db"
 
-def get_llm(model:str = "llama-3.1-8b-instant" , temperature: float = 0.2) -> ChatGroq:  
 
+def get_llm(model: str = "gpt-4o-mini", temperature: float = 0.2) -> ChatOpenAI:
     api_key = None
-    if hasattr(st, "secrets") and "GROQ_API_KEY" in st.secrets:
-        api_key = st.secrets["GROQ_API_KEY"]
+    if hasattr(st, "secrets") and "OPENAI_API_KEY" in st.secrets:
+        api_key = st.secrets["OPENAI_API_KEY"]
     else:
-        api_key = os.getenv("GROQ_API_KEY")
+        api_key = os.getenv("OPENAI_API_KEY")
 
     if not api_key:
         raise ValueError(
-            "GROQ_API_KEY is not set. Please add it to Streamlit Secrets or your .env file."
+            "OPENAI_API_KEY is not set. Please add it to Streamlit Secrets or your .env file."
         )
-    
-        api_key = os.getenv("GROQ_API_KEY")
-    return ChatGroq(model=model, api_key=api_key , temperature=temperature )
+
+    return ChatOpenAI(
+        model=model,
+        temperature=temperature,
+        api_key=api_key
+    )
+
+
+
 
 def get_embeddings(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> HuggingFaceEmbeddings:
     return HuggingFaceEmbeddings(model_name=model_name)
