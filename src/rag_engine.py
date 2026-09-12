@@ -16,6 +16,8 @@ from langchain_openai import OpenAIEmbeddings
 
 from langchain_chroma import Chroma
 
+from langchain_community.vectorstores import Chroma
+
 import chromadb
 
 load_dotenv()
@@ -43,13 +45,9 @@ def get_llm(model: str = "gpt-4o-mini", temperature: float = 0.2) -> ChatOpenAI:
 
 
 
+def get_embeddings(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> HuggingFaceEmbeddings:
+    return HuggingFaceEmbeddings(model_name=model_name)
 
-# def get_embeddings(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> HuggingFaceEmbeddings:
-#     return HuggingFaceEmbeddings(model_name=model_name)
-
-def get_embeddings():
-
-    return OpenAIEmbeddings()
 
 
 
@@ -94,7 +92,7 @@ def create_vectorstore( chunks: List[Document], persist_directory:str ="./chroma
     client = chromadb.PersistentClient(path=persist_directory)
 
     #             ========= vectorstore =========
-    vectorstore = Chroma(embedding_function = get_embeddings() , client=client, collection_name="career_coach_RAG",)
+    vectorstore = Chroma.from_documents(documents = chunks, embedding_function = get_embeddings() , client=client, collection_name="career_coach_RAG",)
     vectorstore.add_documents(documents=chunks) 
 
     return vectorstore
