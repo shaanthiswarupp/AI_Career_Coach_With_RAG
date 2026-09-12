@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-__import__("pysqlite3")
-import sys
-sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+# __import__("pysqlite3")
+# import sys
+# sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 
 import streamlit as st
 from src.file_handle import read_uploaded_file
@@ -88,7 +88,9 @@ if st.button("Build Career Coach RAG Index", type="primary"):
         c1, c2, c3 = st.columns(3)
         c1.metric("Documents", "2")
         c2.metric("Chunks", len(st.session_state.chunks))
-        c3.metric("Vector DB", "ChromaDB")
+        #c3.metric("Vector DB", "ChromaDB")
+        c3.metric("Vector DB", "FAISS")
+
 
 if st.session_state.vectorstore is not None:
     st.markdown("### ✅ Ask Career Questions")
