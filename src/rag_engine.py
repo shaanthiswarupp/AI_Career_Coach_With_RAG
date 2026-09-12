@@ -79,14 +79,38 @@ def retrieve_context_data(    vectorstore: FAISS, query: str, k: int = 4) -> Tup
     context = "\n\n".join([doc.page_content for doc in docs])
     return docs, context
 
+def extract_candidate_name(resume_text: str) -> str:
+    """Extracts the candidate's full name from the uploaded resume text."""
+    if not resume_text or not resume_text.strip():
+        return ""
 
-def run_career_coach(   vectorstore: FAISS, resume_text: str, jd_text: str, query: str, k: int = 4) -> Tuple[str, List[Document]]:
+    llm = get_llm(temperature=0.0)    
+    prompt = ChatPromptTemplate.from_template(
+                                                        """Extract only the candidate's full name from the following resume text header.
+                                                Return ONLY the name (2 to 4 words). Do not include words like 'Resume', 'CV', email addresses, phone numbers, or any punctuation.
+                                                If no clear person name is found, return 'Candidate'.
+
+                                                RESUME TEXT:
+                                                {resume_snippet}
+                                                """
+                                            )
+    
+    chain = prompt | llm | StrOutputParser()
+    # Pass only the first 1000 characters where names are located
+    name = chain.invoke({"resume_snippet": resume_text[:1000]}).strip()
+    return name if name else ""
+
+
+
+def run_career_coach( vectorstore: FAISS, resume_text: str, jd_text: str, query: str, k: int = 4) -> Tuple[str, List[Document]]:
     
     retrieval_query = f"Resume and job description details regarding: {query}"
     docs, context = retrieve_context_data(vectorstore, retrieval_query, k=k)
 
     if not context.strip():
         context = "No relevant context found in the uploaded documents."
+
+    candidate_name = extract_candidate_name(resume_text)
 
     llm = get_llm()
 
@@ -101,9 +125,13 @@ def run_career_coach(   vectorstore: FAISS, resume_text: str, jd_text: str, quer
 
                                                 USER QUESTION:
                                                 {query}
+                                                
+                                                Format your response clearly with these sections when relevant:
+                                                Candidate Name: {candidate_name}
 
                                                 Give a clear, practical answer with these sections when relevant:
-                                                0. Answer to u r Question 
+                                            
+                                                Answer to u r Question {candidate_name}
                                                 1. Current Match Summary
                                                 2. Strengths
                                                 3. Missing Skills / Gaps
@@ -117,7 +145,7 @@ def run_career_coach(   vectorstore: FAISS, resume_text: str, jd_text: str, quer
                                             )
 
     chain = prompt | llm | StrOutputParser()
-    answer = chain.invoke({"context": context, "query": query})
+    answer = chain.invoke({"context": context, "query": query, "candidate_name":candidate_name} )
     return answer, docs
 
 

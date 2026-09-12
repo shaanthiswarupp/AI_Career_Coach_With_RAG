@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import streamlit as st
 from src.file_handle import read_uploaded_file
-from src.rag_engine import (create_documents,  split_documents,   create_vectorstore,  run_career_coach,  generate_complete_report,)
+from src.rag_engine import (create_documents,  split_documents,   create_vectorstore,  run_career_coach,  generate_complete_report, extract_candidate_name,)
 
 st.set_page_config(page_title="SSS AI Career Coach with RAG", page_icon="🎯", layout="wide")
 
@@ -62,6 +62,8 @@ if jd_file:
 elif jd_text_input.strip():
     jd_text = jd_text_input.strip()
 
+
+
 st.divider()
 
 if "vectorstore" not in st.session_state:
@@ -69,11 +71,23 @@ if "vectorstore" not in st.session_state:
 if "chunks" not in st.session_state:
     st.session_state.chunks = []
 
+
+if "candidate_name" not in st.session_state:
+    st.session_state.candidate_name = None
+
+
+
 if st.button("Build Career Coach RAG Index", type="primary"):
     if not resume_text or not jd_text:
         st.error("Please provide both a Resume and a Job Description.")
     else:
         with st.spinner("Building vector database..."):
+
+            # Extract candidate name
+            candidate_name = extract_candidate_name(resume_text)
+            st.session_state.candidate_name = candidate_name
+
+
             docs = create_documents(resume_text, jd_text)
             chunks = split_documents(docs, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
             vectorstore = create_vectorstore(chunks)
@@ -82,15 +96,21 @@ if st.button("Build Career Coach RAG Index", type="primary"):
             st.session_state.chunks = chunks
 
         st.success("RAG index created successfully!")
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Documents", "2")
-        c2.metric("Chunks", len(st.session_state.chunks))
-        #c3.metric("Vector DB", "ChromaDB")
-        c3.metric("Vector DB", "FAISS")
+        c1, c2, c3, c4 = st.columns(4)
+
+        c1.metric("Candidate", st.session_state.candidate_name)
+
+        c2.metric("Documents", "2")
+        c3.metric("Chunks", len(st.session_state.chunks))
+        #c4.metric("Vector DB", "ChromaDB")
+        c4.metric("Vector DB", "FAISS")
 
 
 if st.session_state.vectorstore is not None:
     st.markdown("### ✅ Ask Career Questions")
+    
+    if st.session_state.candidate_name:
+        st.info(f"👤 **Candidate Profile Loaded:** {st.session_state.candidate_name}")
 
     quick_questions = [
         "How well does this resume match the job description?",
