@@ -13,7 +13,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import ChatOpenAI
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings
-
+from your_module import get_embeddings
 from langchain_chroma import Chroma
 from langchain_community.vectorstores import Chroma
 
@@ -82,12 +82,13 @@ def split_documents( documents: List[Document], chunk_size: int = 1000, chunk_ov
 
 
 #------------------->  3 & 4
-def create_vectorstore( chunks: List[Document], persist_directory:str ="./chroma_db" ):
+def create_vectorstore( chunks):
 
-    if os.path.exists(persist_directory):
-        shutil.rmtree(persist_directory)    
+    # if os.path.exists(persist_directory):
+    #     shutil.rmtree(persist_directory)    
 
-    client = chromadb.PersistentClient(path=persist_directory)    
+    # client = chromadb.PersistentClient(path=persist_directory)    
+    client = chromadb.EphemeralClient()
 
     #========= vectorstore =========
     vectorstore = Chroma.from_documents(documents = chunks, embedding = get_embeddings() , client=client, collection_name="career_coach_RAG",)
