@@ -14,6 +14,8 @@ from langchain_openai import ChatOpenAI
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 
+from langchain_community.vectorstores import Chroma
+
 import chromadb
 
 load_dotenv()
@@ -87,7 +89,7 @@ def create_vectorstore( chunks: List[Document], persist_directory:str ="./chroma
     client = chromadb.PersistentClient(path=persist_directory)
 
     #             ========= vectorstore =========
-    vectorstore = Chroma(embedding_function = get_embeddings() , client=client, collection_name="career_coach_RAG",)
+    vectorstore = Chroma.from_documents(documents = chunks, embedding_function = get_embeddings() , client=client, collection_name="career_coach_RAG",)
     vectorstore.add_documents(documents=chunks) 
 
     return vectorstore
