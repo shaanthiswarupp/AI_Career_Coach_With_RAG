@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-# __import__("pysqlite3")
-# import sys
-# sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 
 import streamlit as st
 from src.file_handle import read_uploaded_file
@@ -134,6 +131,13 @@ if st.session_state.vectorstore is not None:
         st.write(report)
 else:
     st.info("Upload/paste Resume and Job Description, then click 'Build Career Coach RAG Index'.")
+
+
+
+
+
+
+    
 # from __future__ import annotations
 
 # __import__('pysqlite3')
