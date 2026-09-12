@@ -29,7 +29,7 @@ with st.sidebar:
     chunk_overlap = st.slider("Chunk Overlap", 0, 400, 150, 50)
     st.divider()
     st.markdown("### RAG Stages")
-    st.markdown("1. Load Resume & JD\n2. Split into Chunks\n3. Convert to Embeddings\n4. Store in ChromaDB\n5. Retrieve Relevant Context\n6. Generate Career Advice")
+    st.markdown("1. Load Resume & JD\n2. Split into Chunks\n3. Convert to Embeddings\n4. Store in FAISS/ChromaDB\n5. Retrieve Relevant Context\n6. Generate Career Advice")
 
 col1, col2 = st.columns(2)
 
@@ -137,7 +137,7 @@ else:
 
 
 
-    
+
 # from __future__ import annotations
 
 # __import__('pysqlite3')
