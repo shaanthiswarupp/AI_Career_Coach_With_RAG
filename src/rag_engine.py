@@ -15,7 +15,6 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings
 
 from langchain_chroma import Chroma
-
 from langchain_community.vectorstores import Chroma
 
 import chromadb
@@ -84,7 +83,7 @@ def split_documents( documents: List[Document], chunk_size: int = 1000, chunk_ov
 
 
 #------------------->  3 & 4
-def create_vectorstore( chunks: List[Document], persist_directory:str ="./chroma_db" )->Chroma:
+def create_vectorstore( chunks: List[Document], persist_directory:str ="./chroma_db" ):
 
     if os.path.exists(persist_directory):
         shutil.rmtree(persist_directory)    
@@ -100,7 +99,7 @@ def create_vectorstore( chunks: List[Document], persist_directory:str ="./chroma
     client = chromadb.EphemeralClient()
 
     #========= vectorstore =========
-    vectorstore = Chroma.from_documents(documents = chunks, embedding_function = get_embeddings() , client=client, collection_name="career_coach_RAG",)
+    vectorstore = Chroma.from_documents(documents = chunks, embedding = get_embeddings() , client=client, collection_name="career_coach_RAG",)
     vectorstore.add_documents(documents=chunks) 
 
     return vectorstore
