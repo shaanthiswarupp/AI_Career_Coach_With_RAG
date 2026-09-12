@@ -18,6 +18,10 @@ openai
 docx2txt
 
 streamlit
+pysqlite3-binary
 chromadb
 langchain-chroma
-pysqlite3-binary
+langchain-openai
+langchain-community
+docx2txt
+pypdf
