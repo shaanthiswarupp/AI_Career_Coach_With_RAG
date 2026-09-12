@@ -131,7 +131,7 @@ def run_career_coach( vectorstore: FAISS, resume_text: str, jd_text: str, query:
 
                                                 Give a clear, practical answer with these sections when relevant:
                                             
-                                                Answer to u r Question {candidate_name}
+                                                Answer for u r Question 
                                                 1. Current Match Summary
                                                 2. Strengths
                                                 3. Missing Skills / Gaps
