@@ -8,7 +8,7 @@ import streamlit as st
 from src.file_handle import read_uploaded_file
 from src.rag_engine import (create_documents,  split_documents,   create_vectorstore,  run_career_coach,  generate_complete_report,)
 
-st.set_page_config(page_title="AI Career Coach with RAG", page_icon="🎯", layout="wide")
+st.set_page_config(page_title="SSS AI Career Coach with RAG", page_icon="🎯", layout="wide")
 
 st.markdown(
     """
@@ -20,7 +20,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.markdown("<div class='main-title'>🎯 AI Career Coach with RAG</div>", unsafe_allow_html=True)
+st.markdown("<div class='main-title'>🎯SSS AI Career Coach with RAG</div>", unsafe_allow_html=True)
 st.markdown(
     "<div class='subtitle'>Resume + Job Description → RAG Pipeline → Skill Gap Analysis & Coaching</div>",
     unsafe_allow_html=True,
