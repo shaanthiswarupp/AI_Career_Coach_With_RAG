@@ -44,10 +44,12 @@ def get_llm(model: str = "gpt-4o-mini", temperature: float = 0.2) -> ChatOpenAI:
 
 
 
-def get_embeddings(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> HuggingFaceEmbeddings:
-    return HuggingFaceEmbeddings(model_name=model_name)
+# def get_embeddings(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> HuggingFaceEmbeddings:
+#     return HuggingFaceEmbeddings(model_name=model_name)
 
 
+def get_embeddings():
+    return OpenAIEmbeddings()
 
 
 #------------------->  1
@@ -64,9 +66,6 @@ def create_documents( resume_text:str, jd_text:str ) -> List[Document]:
 
 
     return [resume_doc, jd_doc]
-
-
-
 
 #------------------->  2
 def split_documents( documents: List[Document], chunk_size: int = 1000, chunk_overlap: int = 200) -> List[Document]:
@@ -88,15 +87,7 @@ def create_vectorstore( chunks: List[Document], persist_directory:str ="./chroma
     if os.path.exists(persist_directory):
         shutil.rmtree(persist_directory)    
 
-    #client = chromadb.PersistentClient(path=persist_directory)
-    # client = chromadb.PersistentClient(
-    #     path=persist_directory,
-    #     settings=Settings(allow_reset=True, anonymized_telemetry=False),
-    #     tenant=DEFAULT_TENANT,
-    #     database=DEFAULT_DATABASE,
-    # )
-
-    client = chromadb.EphemeralClient()
+    client = chromadb.PersistentClient(path=persist_directory)    
 
     #========= vectorstore =========
     vectorstore = Chroma.from_documents(documents = chunks, embedding = get_embeddings() , client=client, collection_name="career_coach_RAG",)
