@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import List, Tuple
 from dotenv import load_dotenv
 
+import uuid
 import streamlit as st
 import chromadb
 from langchain_core.documents import Document
@@ -69,23 +70,44 @@ def split_documents(
     return text_splitter.split_documents(documents)
 
 
-def create_vectorstore(chunks: List[Document], persist_dir: str = "./chroma_db_store") -> Chroma:
-    # Clear old collection on disk if re-indexing
-    if os.path.exists(persist_dir):
-        try:
-            shutil.rmtree(persist_dir)
-        except Exception:
-            pass
+# def create_vectorstore(chunks: List[Document], persist_dir: str = "./chroma_db_store") -> Chroma:
+#     # Clear old collection on disk if re-indexing
+#     if os.path.exists(persist_dir):
+#         try:
+#             shutil.rmtree(persist_dir)
+#         except Exception:
+#             pass
 
-    os.makedirs(persist_dir, exist_ok=True)
-    client = chromadb.PersistentClient(path=persist_dir)
+#     os.makedirs(persist_dir, exist_ok=True)
+#     client = chromadb.PersistentClient(path=persist_dir)
 
-    # Automatically creates collection and adds embeddings
+#     # Automatically creates collection and adds embeddings
+#     vectorstore = Chroma.from_documents(
+#         documents=chunks,
+#         embedding=get_embeddings(),
+#         client=client,
+#         collection_name="career_coach_RAG",
+#     )
+#     return vectorstore
+
+
+
+def create_vectorstore(chunks: List[Document]) -> Chroma:
+    if not chunks:
+        raise ValueError("No text chunks found. Check that the uploaded files contain readable text.")
+
+    # Use a unique ephemeral path or EphemeralClient with Chroma's default settings
+    # to prevent locked SQLite database handles on Streamlit Cloud
+    client = chromadb.Client()  # Standard in-memory client managed by Chroma
+
+    # Unique collection name prevents collection collisions across button clicks
+    unique_collection = f"career_coach_{uuid.uuid4().hex[:8]}"
+
     vectorstore = Chroma.from_documents(
         documents=chunks,
         embedding=get_embeddings(),
         client=client,
-        collection_name="career_coach_RAG",
+        collection_name=unique_collection,
     )
     return vectorstore
 

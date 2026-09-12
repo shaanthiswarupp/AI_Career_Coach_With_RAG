@@ -24,4 +24,5 @@ langchain-chroma
 langchain-openai
 langchain-community
 docx2txt
+python-docx
 pypdf
