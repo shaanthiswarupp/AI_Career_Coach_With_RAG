@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import streamlit as st
 from src.file_handle import read_uploaded_file
-from src.rag_engine import (create_documents,  split_documents,   create_vectorstore,  run_career_coach,  generate_complete_report, extract_candidate_name,)
+from src.rag_engine import (create_documents,  split_documents,   create_vectorstore,  run_career_coach,  generate_complete_report, extract_candidate_name)
 
 st.set_page_config(page_title="SSS AI Career Coach with RAG", page_icon="🎯", layout="wide")
 
@@ -108,7 +108,7 @@ if st.button("Build Career Coach RAG Index", type="primary"):
 
 if st.session_state.vectorstore is not None:
     st.markdown("### ✅ Ask Career Questions")
-    
+
     if st.session_state.candidate_name:
         st.info(f"👤 **Candidate Profile Loaded:** {st.session_state.candidate_name}")
 
