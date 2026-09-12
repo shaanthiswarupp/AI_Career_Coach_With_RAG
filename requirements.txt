@@ -26,3 +26,4 @@ langchain-community
 docx2txt
 python-docx
 pypdf
+faiss-cpu
