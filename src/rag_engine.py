@@ -12,6 +12,8 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import ChatOpenAI
 from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_openai import OpenAIEmbeddings
+
 from langchain_chroma import Chroma
 
 from langchain_community.vectorstores import Chroma
@@ -43,9 +45,10 @@ def get_llm(model: str = "gpt-4o-mini", temperature: float = 0.2) -> ChatOpenAI:
 
 
 
+ def get_embeddings(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> HuggingFaceEmbeddings:
+     return HuggingFaceEmbeddings(model_name=model_name)
 
-def get_embeddings(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> HuggingFaceEmbeddings:
-    return HuggingFaceEmbeddings(model_name=model_name)
+
 
 
 #------------------->  1
