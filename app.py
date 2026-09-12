@@ -70,10 +70,22 @@ with col2:
 
 
 #===== read_uploaded_file ======  from------->>>> file_handle.py
-resume_text = ( read_uploaded_file(resume_file) if  resume_file else resume_text_input) or ""
+# resume_text = ( read_uploaded_file(resume_file) if  resume_file else resume_text_input) or ""
 
-jd_text = (read_uploaded_file(jd_file) if  jd_file else jd_text_input ) or ""
+# jd_text = (read_uploaded_file(jd_file) if  jd_file else jd_text_input ) or ""
+# Wrap file reading in a try-except to avoid unhandled errors on bad files
 
+try:
+    resume_text = (read_uploaded_file(resume_file) if resume_file else resume_text_input) or ""
+except Exception as e:
+    st.error(f"Error reading resume: {e}")
+    resume_text = ""
+
+try:
+    jd_text = (read_uploaded_file(jd_file) if jd_file else jd_text_input) or ""
+except Exception as e:
+    st.error(f"Error reading job description: {e}")
+    jd_text = ""
 
 
 st.divider()#----------------------------------------------------------------------

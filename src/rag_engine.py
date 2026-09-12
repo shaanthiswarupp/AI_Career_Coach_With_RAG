@@ -14,7 +14,6 @@ from langchain_openai import ChatOpenAI
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
-from langchain_community.vectorstores import Chroma
 
 import chromadb
 
@@ -41,15 +40,11 @@ def get_llm(model: str = "gpt-4o-mini", temperature: float = 0.2) -> ChatOpenAI:
         api_key=api_key
     )
 
-
-
 # def get_embeddings(model_name: str = "sentence-transformers/all-MiniLM-L6-v2") -> HuggingFaceEmbeddings:
 #     return HuggingFaceEmbeddings(model_name=model_name)
 
-
 def get_embeddings():
     return OpenAIEmbeddings()
-
 
 #------------------->  1
 def load_text_file( file_path: str , doc_type: str, source: str ) -> List[Document]:
@@ -76,10 +71,6 @@ def split_documents( documents: List[Document], chunk_size: int = 1000, chunk_ov
     return splitted_documents
 
 
-
-
-
-
 #------------------->  3 & 4
 def create_vectorstore( chunks):
 
@@ -91,12 +82,7 @@ def create_vectorstore( chunks):
 
     #========= vectorstore =========
     vectorstore = Chroma.from_documents(documents = chunks, embedding = get_embeddings() , client=client, collection_name="career_coach_RAG",)
-    vectorstore.add_documents(documents=chunks) 
-
     return vectorstore
-
-
-
 
 
 
