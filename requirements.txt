@@ -18,3 +18,5 @@ langchain-openai
 openai
 
 docx2txt
+pysqlite3-binary
+chromadb

@@ -89,9 +89,17 @@ def create_vectorstore( chunks: List[Document], persist_directory:str ="./chroma
     if os.path.exists(persist_directory):
         shutil.rmtree(persist_directory)    
 
-    client = chromadb.PersistentClient(path=persist_directory)
+    #client = chromadb.PersistentClient(path=persist_directory)
+    # client = chromadb.PersistentClient(
+    #     path=persist_directory,
+    #     settings=Settings(allow_reset=True, anonymized_telemetry=False),
+    #     tenant=DEFAULT_TENANT,
+    #     database=DEFAULT_DATABASE,
+    # )
 
-    #             ========= vectorstore =========
+    client = chromadb.EphemeralClient()
+
+    #========= vectorstore =========
     vectorstore = Chroma.from_documents(documents = chunks, embedding_function = get_embeddings() , client=client, collection_name="career_coach_RAG",)
     vectorstore.add_documents(documents=chunks) 
 
